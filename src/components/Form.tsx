@@ -1,16 +1,25 @@
-import {Form, Button , Input } from 'antd';
+import {Form, Button } from 'antd';
+import {CheckOutlined , PlusOutlined , CloseOutlined , EditOutlined} from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store/rootStore';
 import { observer } from 'mobx-react-lite';
+import {FormStyle} from './styles/Form.styled'
+import {InputFeild} from './styles/input.styled'
+import {List} from './styles/list.styled'
+import {BtnStyle,DelBtn , UpdateBtn , DelAllBtnDiv , DelAllBtn ,SubBtn} from './styles/btn.styled'
+import {ListDiv} from './styles/list.styled'
+// import '../App.css'
 
 const FormItems = () => {
     const [form] = Form.useForm();
-    const Task=useRef('')
     const [data, setData]= useState({})
-    const [listItem , setListItem]=useState([])
     const [btn , setBtn]=useState(true)
     const [id , setId]=useState()
-    const [title , setTitle]=useState()
+
+    const btns={
+      del : "delBtn",
+      update : "UpBtn",
+    }
 
     const {
         TodoListModal: { getTodoo, setTodoo,deleteTodoo,updateTodoo, getTOODO},
@@ -43,8 +52,9 @@ const FormItems = () => {
       }
 
       const submit=()=>{
-        setTodoo(data)
         setBtn(true)
+        setTodoo(data)
+        
       }
       const deleteItem=(id : any)=>{
         deleteTodoo(id.id)
@@ -52,44 +62,53 @@ const FormItems = () => {
       const updateItem=(id : any)=>{
         
         form.setFieldsValue({
-            title: id.title,
+          title: id.title,
           });
           setBtn(false)
            setId(id.id)
-           setTitle(id.title)
-      
+      }
+
+      const clickme=()=>{    
+      getTOODO ? getTOODO.map((elem)=> {console.log(elem.id) ;
+        deleteTodoo(elem.id)
+    } ) : console.log('nothing')
       }
    
     return ( <>
-        <div >
+        
+            <FormStyle>
         <Form form={form} onFinish={submit}>
             <Form.Item name='title'>
-            <Input placeholder="Basic usage" value='' onChange={(e)=>inputValue(e)}/>
+            <InputFeild placeholder="Enter Task" onChange={(e)=>inputValue(e)}></InputFeild>
             </Form.Item>
-            <Form.Item>{
+            <Form.Item>
+              <BtnStyle>
+                {
                 btn ?
-                <Button type="primary" htmlType="submit">Submit</Button> :
-                <Button type="primary" htmlType="submit" >Update</Button> 
-            }
+                <SubBtn  onClick={submit}><PlusOutlined /></SubBtn> :
+                <SubBtn onClick={submit} ><EditOutlined /></SubBtn> 
+              } 
+                </BtnStyle>            
             </Form.Item>
         </Form>
-           
-            
-            
+            <ListDiv>
             <ul>
             {getTOODO? getTOODO.map((item , ind)=>{
                 return(
                     <div key={ind}>
-                        <li >{item.title}
-
-                        <Button onClick={()=>deleteItem(item)}>D</Button>
-                        <Button onClick={()=>updateItem(item)}>U</Button>
-                        </li>
+                        <List>{item.title}
+                        <DelBtn onClick={()=>deleteItem(item)}><CloseOutlined /></DelBtn>
+                        <UpdateBtn onClick={()=>updateItem(item)}><EditOutlined /></UpdateBtn>
+                        </List>
                     </div>
                 )
             }) : ''}
             </ul>
-            </div>
+            </ListDiv>
+            <DelAllBtnDiv>
+           <DelAllBtn  onClick={clickme}>Delete All</DelAllBtn>
+           </DelAllBtnDiv>
+            </FormStyle>
         </> );
 }
 

@@ -30,9 +30,13 @@ export const TodoListModal = types.model({
          console.log('ends')
         }
       }) 
+      let i=0
       const setTodoo = flow(function* fetchData(data) {
         console.log(">>>")
+        
+        if(i==0){
         try {
+            i++
           const res = yield setTodo(data)
           console.log("?")
         } catch (error) {
@@ -40,6 +44,8 @@ export const TodoListModal = types.model({
         } finally {
          console.log('ends')
         }
+    }
+    i--
       })
       const deleteTodoo = flow(function* fetchData(id) {
         console.log(">>>")

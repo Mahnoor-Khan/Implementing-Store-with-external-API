@@ -14,7 +14,8 @@ export const getTodo = async () => {
   export const setTodo = async (data :any) => {
     console.log("????")
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/`,data)
+      const response = await axios.post(`http://127.0.0.1:8000/`,data);
+      
       return response.data
     } catch (error) {
       throw Promise.reject(error)
